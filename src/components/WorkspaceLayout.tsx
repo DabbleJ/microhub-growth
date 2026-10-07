@@ -8,7 +8,7 @@ import { useWorkspace, download, parseWorkspace } from '@/lib/workspace';
 import { makeScenario } from '@/lib/defaults';
 import { toast } from 'sonner';
 import SourceNotice from '@/components/SourceNotice';
-const links = [{ to: '/', label: 'Dashboard', icon: LayoutDashboard }, { to: '/model', label: 'Hub Model', icon: SlidersHorizontal }, { to: '/sites', label: 'Sites', icon: MapPin }, { to: '/map', label: 'Cascadia Map', icon: MapPin }, { to: '/sources', label: 'Source Scorecard', icon: BookOpen }, { to: '/partners', label: 'Partners & Outreach', icon: Users }, { to: '/assumptions', label: 'Assumptions Log', icon: BookOpen }];
+const links = [{ to: '/', label: 'Sites', icon: MapPin }, { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }, { to: '/model', label: 'Hub Model', icon: SlidersHorizontal }, { to: '/map', label: 'Cascadia Map', icon: MapPin }, { to: '/sources', label: 'Source Scorecard', icon: BookOpen }, { to: '/partners', label: 'Partners & Outreach', icon: Users }, { to: '/assumptions', label: 'Assumptions Log', icon: BookOpen }];
 export default function WorkspaceLayout() {
   const { data, setData, active } = useWorkspace();
   const navigate = useNavigate();
