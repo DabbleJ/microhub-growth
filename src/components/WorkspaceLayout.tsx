@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, SlidersHorizontal, MapPin, Users, BookOpen, ArrowDownToLine, Upload, ChevronDown, Plus, Copy, Pencil, Trash2, GitCompareArrows, Bike, Menu, X, Check, Leaf } from 'lucide-react';
+import { LayoutDashboard, SlidersHorizontal, MapPin, Users, BookOpen, ArrowDownToLine, Upload, ChevronDown, Plus, Copy, Pencil, Trash2, GitCompareArrows, Menu, X, Check, Leaf } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -29,7 +29,7 @@ export default function WorkspaceLayout() {
   return <div className="min-h-screen bg-background">
     {mobile && <div className="fixed inset-0 z-30 bg-teal-950/30 lg:hidden" onClick={() => setMobile(false)} />}
     <aside className={`no-print fixed inset-y-0 left-0 z-40 flex w-[232px] flex-col overflow-y-auto border-r border-border bg-[#fcfcf7] transition-transform lg:translate-x-0 ${mobile ? 'translate-x-0' : '-translate-x-full'}`}>
-      <div className="px-7 pb-7 pt-8"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground"><Bike size={27} strokeWidth={1.8} /></div><div><span className="text-[26px] font-extrabold leading-none tracking-[-1.4px]">B-LINE<span className="text-teal-700">.</span></span><p className="mt-1 text-[9px] font-semibold uppercase tracking-[2px] text-muted-foreground">Urban Delivery</p></div></div><div className="mt-5 text-[11px] font-medium text-muted-foreground">MICROHUB PLANNER <span className="ml-2 rounded bg-[#ecefe8] px-1.5 py-0.5 text-[9px]">V1</span></div></div>
+      <div className="px-5 pb-7 pt-6"><NavLink to="/" onClick={() => setMobile(false)} aria-label="B-Line Urban Delivery — Sites home" className="block rounded-2xl bg-teal-900 px-4 py-5 transition-colors hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2"><img src="https://b-linepdx.com/wp-content/uploads/Approved-B-Line-Urban-Delivery-white-logo-with-strapline.png" alt="B-Line Urban Delivery" className="h-auto w-full object-contain" /></NavLink><div className="mt-5 text-[11px] font-medium text-muted-foreground">MICROHUB PLANNER <span className="ml-2 rounded bg-[#ecefe8] px-1.5 py-0.5 text-[9px]">V1</span></div></div>
       <div className="px-5 text-[9px] font-semibold uppercase tracking-[1.8px] text-muted-foreground">Workspace</div>
       <nav className="mt-3 space-y-1 px-3">{links.map(l => <NavLink key={l.to} to={l.to} end={l.to === '/'} onClick={() => setMobile(false)} className={({ isActive }) => `flex items-center gap-3 rounded-xl px-4 py-3 text-[13px] font-medium ${isActive ? 'bg-[#e8eedf] text-teal-900' : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}`}><l.icon size={18} strokeWidth={1.8} />{l.label}</NavLink>)}</nav>
       <div className="mt-8 px-5 text-[9px] font-semibold uppercase tracking-[1.8px] text-muted-foreground">Your scenarios <span className="float-right">{data.scenarios.length}</span></div>
