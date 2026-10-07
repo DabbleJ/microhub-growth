@@ -2,7 +2,7 @@
 
 ## Shared-password access
 
-Set `NITRO_PLANNER_PASSWORD` as a private server environment variable in your deployment settings (use a long, unique password). Never use a `VITE_` prefix or commit the password. The planner stays locked if this setting is missing. Redeploy after changing deployment secrets. Local preview also requires this private environment setting and a server restart after changing it.
+Set `NITRO_PLANNER_PASSWORD` as a private server environment variable in your deployment settings. Never use a `VITE_` prefix or commit the password. The planner stays locked if this setting is missing. Redeploy after changing deployment secrets. For local preview, put it in Git-ignored `.env.local` and restart the preview server after changing it.
 
 Deploy with the Nitro server output, not as a static-only site. Use HTTPS in production. Sessions are signed, HttpOnly cookies that expire after 8 hours; changing the password invalidates existing sessions. Sign out clears the browser's session cookie, not its saved workspace.
 
