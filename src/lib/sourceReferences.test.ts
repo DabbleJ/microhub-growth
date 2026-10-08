@@ -38,6 +38,6 @@ describe('Supplied October 7 source references', () => {
     const copy = sourceSiteRecord(national);
     expect(copy.id).toBe('source-20261007-national');
     expect(copy.notes).toContain('NOT a free lease');
-    expect(copy.notes).toContain('Archinnovo');
+    expect(copy.notes).toContain('ARCHINNOVO Site Analysis — LACI Model');
   });
 });
