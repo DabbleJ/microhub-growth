@@ -51,7 +51,7 @@ export const fields: Field[] = [
 ];
 export const defaultInputs: Inputs = Object.fromEntries(fields.map(f => [f.key, f.value]));
 export type Metadata = { source: string; confidence: 'low' | 'med' | 'high'; validation: boolean };
-export type Scenario = { id: string; name: string; city: string; siteId?: string; inputs: Inputs; metadata: Record<string, Metadata> };
+export type Scenario = { id: string; name: string; city: string; siteId?: string; model?: 'annual' | 'scott'; scott?: { inputs: Inputs; metadata: Record<string, Metadata> }; inputs: Inputs; metadata: Record<string, Metadata> };
 export type Site = { id: string; name: string; city: string; address: string; sf: number; score: number; neighborhood: string; rent: number; partner: string; status: string; notes: string };
 export const statuses = ['to contact', 'reached out', 'meeting set', 'met', 'follow-up'] as const;
 export type Partner = { id: string; org: string; contact: string; role: string; city: string; type: string; status: typeof statuses[number]; lastTouch: string; nextStep: string; notes: string };

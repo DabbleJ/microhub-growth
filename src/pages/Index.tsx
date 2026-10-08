@@ -1,3 +1,4 @@
+import ScottFinancials from '@/components/ScottFinancials';
 import { Link } from 'react-router-dom';
 import { ArrowRight, GitCompareArrows, MapPin, Printer, SlidersHorizontal, CircleHelp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,7 @@ import { useWorkspace } from '@/lib/workspace';
 import { Kpis, FinanceChart, Targets, Drivers, Panel } from '@/components/Financials';
 export default function Index() {
   const { active, data } = useWorkspace();
+  if (active.model === 'scott') return <div className="space-y-6"><h1>Your hub, at a glance.</h1><ScottFinancials scenario={active} /><Button asChild className="rounded-xl"><Link to="/model">Edit Scott model assumptions</Link></Button></div>;
   const validations = Object.values(active.metadata).filter(m => m.validation).length;
   return <div className="space-y-6"><div className="flex flex-wrap items-end justify-between gap-4"><div><div className="eyebrow">A neighborhood-sized future</div><h1 className="mt-2">Your hub, at a glance.</h1><p className="mt-2 text-sm text-muted-foreground">One place to test the economics. A clearer path to the next B-Line hub.</p></div><div className="no-print flex gap-2"><Button variant="outline" className="action-button" onClick={() => window.print()}><Printer size={14} />Print</Button><Button variant="outline" className="action-button" asChild><Link to="/compare"><GitCompareArrows size={15} />Compare</Link></Button><Button className="rounded-xl text-xs font-semibold" asChild><Link to="/model"><SlidersHorizontal size={15} className="mr-2" />Edit hub model<ArrowRight size={14} className="ml-3" /></Link></Button></div></div>
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#dce5d2] bg-[#eef3e7] px-4 py-3"><div className="flex items-center gap-3"><span className="rounded-md bg-white/80 p-1.5 text-teal-700"><MapPin size={17} /></span><div className="text-xs"><span className="font-semibold">{active.name}</span><span className="mx-3 text-[#bbc8af]">/</span><span className="text-muted-foreground">{active.city} · Single neighborhood hub</span></div></div><span className="rounded-full bg-white px-3 py-1 text-[10px] font-medium text-teal-800">Planning scenario</span></div>

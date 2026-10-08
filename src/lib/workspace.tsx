@@ -2,20 +2,25 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { z } from 'zod';
 import { fields, initialWorkspace, statuses, type Workspace, type Scenario, type InputValue } from './defaults';
 import { toast } from 'sonner';
+import { scottFields } from './scottModel';
 const inputShape: Record<string, z.ZodTypeAny> = {};
 fields.forEach(f => {
   inputShape[f.key] = typeof f.value === 'number' ? z.number().finite().min(0).max(f.max ?? 1e9) : typeof f.value === 'boolean' ? z.boolean() : f.options ? z.string().refine(v => f.options!.includes(v)) : f.unit === 'date' ? z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(v => Number.isFinite(Date.parse(v))) : z.string().max(2000);
 });
+const scottShape = Object.fromEntries(scottFields.map(f => [f.key,z.number().finite().min(0).max(f.max ?? 1e9)]));
 const metadata = z.object({ source: z.string(), confidence: z.enum(['low', 'med', 'high']), validation: z.boolean() });
 const schema = z.object({
   version: z.literal(1), activeId: z.string(),
-  scenarios: z.array(z.object({ id: z.string(), name: z.string().min(1), city: z.string(), siteId: z.string().optional(), inputs: z.object(inputShape), metadata: z.record(metadata) })).min(1).max(500),
+  scenarios: z.array(z.object({ id: z.string(), name: z.string().min(1), city: z.string(), siteId: z.string().optional(), model: z.enum(['annual','scott']).optional(), scott: z.object({ inputs: z.object(scottShape), metadata: z.record(metadata) }).optional(), inputs: z.object(inputShape), metadata: z.record(metadata) })).min(1).max(500),
   sites: z.array(z.object({ id: z.string(), name: z.string(), city: z.string(), address: z.string(), sf: z.number().finite().min(0), score: z.number().finite().min(0), neighborhood: z.string(), rent: z.number().finite().min(0), partner: z.string(), status: z.string(), notes: z.string() })),
   partners: z.array(z.object({ id: z.string(), org: z.string(), contact: z.string(), role: z.string(), city: z.string(), type: z.string(), status: z.enum(statuses), lastTouch: z.string(), nextStep: z.string(), notes: z.string() })),
 }).superRefine((w, ctx) => {
   if (!w.scenarios.some(s => s.id === w.activeId)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Active scenario is missing' });
   for (const collection of [w.scenarios, w.sites, w.partners]) if (new Set(collection.map(x => x.id)).size !== collection.length) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Duplicate record IDs' });
-  for (const s of w.scenarios) if (fields.some(f => !s.metadata[f.key])) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Assumption metadata missing' });
+  for (const s of w.scenarios) {
+    if (fields.some(f => !s.metadata[f.key])) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Assumption metadata missing' });
+    if (s.model === 'scott' && !s.scott || s.scott && scottFields.some(f => !s.scott!.metadata[f.key])) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Scott assumptions missing' });
+  }
 });
 export function parseWorkspace(text: string): Workspace { return schema.parse(JSON.parse(text)) as Workspace; }
 const KEY = 'b-line-microhub-v1';
