@@ -13,7 +13,7 @@ const metadata = z.object({ source: z.string(), confidence: z.enum(['low', 'med'
 const schema = z.object({
   version: z.literal(1), activeId: z.string(), seattleRentUpdate: z.literal(1).optional(),
   scenarios: z.array(z.object({ id: z.string(), name: z.string().min(1), city: z.string(), siteId: z.string().optional(), model: z.enum(['annual','scott']).optional(), scott: z.object({ inputs: z.object(scottShape), metadata: z.record(metadata) }).optional(), inputs: z.object(inputShape), metadata: z.record(metadata) })).min(1).max(500),
-  sites: z.array(z.object({ id: z.string(), name: z.string(), city: z.string(), address: z.string(), sf: z.number().finite().min(0), score: z.number().finite().min(0), neighborhood: z.string(), rent: z.number().finite().min(0), partner: z.string(), status: z.string(), notes: z.string() })),
+  sites: z.array(z.object({ id: z.string(), name: z.string(), city: z.string(), address: z.string(), sf: z.number().finite().min(0), score: z.number().finite().min(0), neighborhood: z.string(), rent: z.number().finite().min(0), partner: z.string(), status: z.string(), notes: z.string(), scorecard: z.object({ answers: z.record(z.object({ rating: z.union([z.literal(0), z.literal(1), z.literal(2)]).optional(), evidence: z.string().max(10000) })) }).optional() })),
   partners: z.array(z.object({ id: z.string(), org: z.string(), contact: z.string(), role: z.string(), city: z.string(), type: z.string(), status: z.enum(statuses), lastTouch: z.string(), nextStep: z.string(), notes: z.string() })),
 }).superRefine((w, ctx) => {
   if (!w.scenarios.some(s => s.id === w.activeId)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Active scenario is missing' });

@@ -12,8 +12,9 @@ import Compare from '@/pages/Compare';
 import CascadiaMap from '@/pages/CascadiaMap';
 import SourceReview from '@/pages/SourceReview';
 import ProjectNotes from '@/pages/ProjectNotes';
+import SiteScorecard from '@/pages/SiteScorecard';
 import NotFound from '@/pages/NotFound';
 import AccessGate from '@/components/AccessGate';
 export default function App() {
-  return <TooltipProvider><Toaster richColors /><AccessGate><WorkspaceProvider><BrowserRouter><Routes><Route element={<WorkspaceLayout />}><Route path="/" element={<Sites />} /><Route path="/dashboard" element={<Index />} /><Route path="/model" element={<HubModel />} /><Route path="/sites" element={<Navigate to="/" replace />} /><Route path="/sites/:id/proforma" element={<SiteProforma />} /><Route path="/partners" element={<Partners />} /><Route path="/assumptions" element={<Assumptions />} /><Route path="/compare" element={<Compare />} /><Route path="/map" element={<CascadiaMap />} /><Route path="/sources" element={<SourceReview />} /><Route path="/project-notes" element={<ProjectNotes />} /></Route><Route path="*" element={<NotFound />} /></Routes></BrowserRouter></WorkspaceProvider></AccessGate></TooltipProvider>;
+  return <TooltipProvider><Toaster richColors /><AccessGate><WorkspaceProvider><BrowserRouter><Routes><Route element={<WorkspaceLayout />}><Route path="/" element={<Sites />} /><Route path="/dashboard" element={<Index />} /><Route path="/model" element={<HubModel />} /><Route path="/sites" element={<Navigate to="/" replace />} /><Route path="/sites/:id/proforma" element={<SiteProforma />} /><Route path="/scorecard" element={<SiteScorecard />} /><Route path="/partners" element={<Partners />} /><Route path="/assumptions" element={<Assumptions />} /><Route path="/compare" element={<Compare />} /><Route path="/map" element={<CascadiaMap />} /><Route path="/sources" element={<SourceReview />} /><Route path="/project-notes" element={<ProjectNotes />} /></Route><Route path="*" element={<NotFound />} /></Routes></BrowserRouter></WorkspaceProvider></AccessGate></TooltipProvider>;
 }
