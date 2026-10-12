@@ -1,7 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { equal, issueSession, password } from '../utils/plannerAccess';
+import { createHmac } from 'node:crypto';
+import { equal, issueSession, password, sessionSeconds, validSession } from '../utils/plannerAccess';
 
-afterEach(() => vi.unstubAllEnvs());
+afterEach(() => { vi.unstubAllEnvs(); vi.useRealTimers(); });
 describe('shared-password server access', () => {
   it('fails closed without configuration', () => {
     vi.stubEnv('NITRO_PLANNER_PASSWORD', '');
@@ -23,5 +24,24 @@ describe('shared-password server access', () => {
     expect(Number(expires)).toBeGreaterThan(Date.now());
     expect(nonce).toHaveLength(48);
     expect(signature).toHaveLength(64);
+  });
+  it('rejects malformed, tampered, expired and rotated-password sessions', () => {
+    vi.useFakeTimers();
+    const token = issueSession('test-only-secret');
+    expect(validSession(token, 'test-only-secret')).toBe(true);
+    expect(validSession(token, '')).toBe(false);
+    expect(validSession(token, 'rotated-secret')).toBe(false);
+    expect(validSession(`${token}.extra`, 'test-only-secret')).toBe(false);
+    expect(validSession(token.replace(/^\d+/, 'NaN'), 'test-only-secret')).toBe(false);
+    expect(validSession(token.slice(0, -1), 'test-only-secret')).toBe(false);
+    vi.advanceTimersByTime(sessionSeconds * 1000);
+    expect(validSession(token, 'test-only-secret')).toBe(false);
+  });
+  it('rejects signed sessions with invalid or excessive lifetimes', () => {
+    for (const expiry of ['NaN', 'Infinity', String(Date.now() + sessionSeconds * 2000)]) {
+      const payload = `${expiry}.${'a'.repeat(48)}`;
+      const signature = createHmac('sha256', 'test-only-secret').update(payload).digest('hex');
+      expect(validSession(`${payload}.${signature}`, 'test-only-secret')).toBe(false);
+    }
   });
 });

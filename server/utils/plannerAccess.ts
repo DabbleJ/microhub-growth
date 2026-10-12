@@ -13,18 +13,22 @@ export function issueSession(secret: string) {
   const payload = `${Date.now() + sessionSeconds * 1000}.${randomBytes(24).toString('hex')}`;
   return `${payload}.${createHmac('sha256', secret).update(payload).digest('hex')}`;
 }
-export function hasSession(event: H3Event) {
-  const secret = password();
-  const token = getCookie(event, cookieName) || '';
-  if (!secret || token.length > 200) return false;
+export function validSession(token: string, secret: string) {
+  if (!secret || !/^\d{13}\.[a-f0-9]{48}\.[a-f0-9]{64}$/.test(token)) return false;
   const [expires, nonce, signature] = token.split('.');
-  if (!expires || !nonce || !signature || Number(expires) <= Date.now()) return false;
+  const expiry = Number(expires);
+  if (!Number.isSafeInteger(expiry) || expiry <= Date.now() || expiry > Date.now() + sessionSeconds * 1000) return false;
   const expected = createHmac('sha256', secret).update(`${expires}.${nonce}`).digest('hex');
   return equal(signature, expected);
 }
+export function hasSession(event: H3Event) {
+  return validSession(getCookie(event, cookieName) || '', password());
+}
 export function checkOrigin(event: H3Event) {
   const origin = event.req.headers.get('origin');
-  if (origin && origin !== getRequestURL(event).origin) throw createError({ statusCode: 403, statusMessage: 'Invalid origin' });
+  if (!origin || origin !== getRequestURL(event).origin || event.req.headers.get('sec-fetch-site') === 'cross-site') {
+    throw createError({ statusCode: 403, statusMessage: 'Invalid origin' });
+  }
 }
 export function secureCookie(event: H3Event) {
   return getRequestURL(event).protocol === 'https:' || process.env.NODE_ENV === 'production';

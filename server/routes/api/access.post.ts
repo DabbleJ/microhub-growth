@@ -15,6 +15,6 @@ export default defineHandler(async event => {
   if (typeof body?.password !== 'string' || body.password.length > 1024 || !equal(body.password, secret)) {
     throw createError({ statusCode: 401, statusMessage: 'Incorrect password' });
   }
-  setCookie(event, cookieName, issueSession(secret), { httpOnly: true, secure: secureCookie(event), sameSite: 'lax', path: '/', maxAge: sessionSeconds });
+  setCookie(event, cookieName, issueSession(secret), { httpOnly: true, secure: secureCookie(event), sameSite: 'strict', path: '/', maxAge: sessionSeconds });
   return { authenticated: true };
 });

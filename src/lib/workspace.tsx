@@ -40,6 +40,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 }
 export function useWorkspace() { const ctx = useContext(Context); if (!ctx) throw new Error('Workspace provider missing'); return ctx; }
 export function download(name: string, text: string, type = 'application/json') {
+  if (!window.confirm('Export private planner data? This downloads an unencrypted file that may include site details, partner contacts, financial assumptions and evidence notes. Anyone with the file can read it. Store it securely and share only with authorized team members.')) return;
   const url = URL.createObjectURL(new Blob([text], { type }));
   const a = document.createElement('a'); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
